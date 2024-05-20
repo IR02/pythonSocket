@@ -11,9 +11,9 @@ ADDR = (SERVER, PORT)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
-def send(msg):
+def send(message_dict):
     # Serialize the message using pickle
-    message = pickle.dumps(msg)
+    message = pickle.dumps(message_dict)
     msg_length = len(message)
     send_length = str(msg_length).encode(FORMAT)
     send_length += b' ' * (HEADER - len(send_length))
@@ -28,8 +28,9 @@ def send(msg):
     except pickle.UnpicklingError as e:
         print(f"Error unpickling response: {e}")
 
-send("Hello World!")
+# Send a dictionary message to the server
+send({"message": "Hello Server!", "type": "greeting"})
 input()
-send("Hello MSG 2")
+send({"message": "How are you?", "type": "question"})
 input()
-send(DISCONNECT_MESSAGE)
+send({"message": DISCONNECT_MESSAGE, "type": "disconnect"})
