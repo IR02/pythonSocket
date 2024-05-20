@@ -1,6 +1,8 @@
 import socket
 import threading
 import pickle
+import signal
+import sys
 
 HEADER = 64
 PORT = 5050
@@ -16,6 +18,16 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind socket to address
 server.bind(ADDR)
+
+# Function to handle shutdown signals
+def signal_handler(sig, frame):
+    print("\n[SHUTTING DOWN] Server is shutting down...")
+    server.close()
+    sys.exit(0)
+
+# Register signal handler
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 # Handle each connection
 def handle_client(conn, addr):
