@@ -20,7 +20,7 @@ This project implements a multi-threaded TCP server in Python that handles clien
 1. **Clone the repository**:
    ```sh
    git clone (https://github.com/IR02/pythonSocket.git)
-   cd pythonSocket```
+   cd pythonSocket
 2. **Run the server**:
    ```sh
    python server.py
