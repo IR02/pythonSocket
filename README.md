@@ -40,3 +40,6 @@ This project implements a multi-threaded TCP server in Python that handles clien
 
    **Client**
    The client connects to the server and sends dictionary messages serialized with pickle. It also handles the server's response by deserializing it.
+
+## Conclusion
+This project demonstrates how to implement a multi-threaded TCP server in Python using pickle for serializing and deserializing data, and how to handle graceful shutdowns. This setup can be extended to handle more complex communication protocols and larger data structures.
