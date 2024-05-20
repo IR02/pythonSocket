@@ -1,5 +1,6 @@
 import socket
 import threading
+import pickle
 
 HEADER = 64 
 PORT = 5050
@@ -10,27 +11,36 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 
 print(SERVER)
 
-#CREATE SOCKET
+# Create sockeet
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-#BIND SOCKET to ADDRESS
+# Bind socket to address
 server.bind(ADDR)
 
-#HANDLE EACH CONNECTION
+# Handle eeach connection
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
     while connected:
-        msg_length = conn.recv(HEADER).decode(FORMAT)
+        msg_length = conn.recv(HEADER).decode(FORMAT).strip()
         if msg_length:
             msg_length = int(msg_length)
-            msg = conn.recv(msg_length).decode(FORMAT)
-        
-            if msg == DISCONNECT_MESSAGE:
-                connected = False
-            print(f"[{ADDR}] {msg}")
-            conn.send("MSG received.".encode(FORMAT))
+            msg = conn.recv(msg_length)
+
+            # Deserialize the message using pickle
+            try:
+                data = pickle.loads(msg)
+                if data == DISCONNECT_MESSAGE:
+                    connected = False
+                print(f"[{addr}] {data}")
+                
+                # Sending a response
+                response = "MSG received."
+                response_serialized = pickle.dumps(response)
+                conn.send(response_serialized)
+            except pickle.UnpicklingError as e:
+                print(f"Error unpickling message: {e}")
             
     conn.close()
 
