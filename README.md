@@ -31,6 +31,9 @@ This project implements a multi-threaded TCP server in Python that handles clien
     ```sh
    python client.py
 
+## How to Stop the server
+   Press `Ctrl+C` in the terminal where the server is running. This triggers the signal handler, which shuts down the server gracefully.
+
 ## Usage
    **Server**
    The server listens for incoming connections on a specified port and handles each client in a separate thread. It serializes responses using pickle and can shut down gracefully on receiving termination signals.
