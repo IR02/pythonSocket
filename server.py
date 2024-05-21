@@ -4,9 +4,10 @@ import pickle
 import signal
 import sys
 
+# Constants
 HEADER = 64
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = socket.gethostbyname(socket.gethostname()) # Get the local machine name
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "!DISCONNECT"
@@ -29,12 +30,13 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
-# Handle each connection
+# Function to handle shutdown signals
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
     while connected:
+        # Receive the message length header
         msg_length = conn.recv(HEADER).decode(FORMAT).strip()
         if msg_length:
             msg_length = int(msg_length)
@@ -47,7 +49,7 @@ def handle_client(conn, addr):
                     connected = False
                 print(f"[{addr}] {data}")
                 
-                # Sending a response
+                # Send a response back to the client
                 response = {"status": "success", "data": "Message received."}
                 response_serialized = pickle.dumps(response)
                 conn.send(response_serialized)
@@ -56,13 +58,14 @@ def handle_client(conn, addr):
             
     conn.close()
 
-# Handle new connection
+# Function to start the server and handle incoming connections
 def start():
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
-        # New connection
+        # Accept a new connection
         conn, addr = server.accept()
+        # Start a new thread to handle the client connection
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         # Active connection
