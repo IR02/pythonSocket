@@ -1,4 +1,5 @@
 import socket
+import os
 
 # Constants
 PORT = 4455
@@ -16,8 +17,24 @@ def start(server):
         conn, addr = server.accept()
         print(f"[NEW CONNECTION] {addr} connected.\n")
 
-        msg = conn.recv(SIZE).decode(FORMAT)
-        print(msg)
+        # Receive folder_name from client
+        folder_name = conn.recv(SIZE).decode(FORMAT)
+        print(folder_name)
+
+        # Create folder
+        folder_path = os.path.join(SERVER_FOLDER, folder_name)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            conn.send(f"Folder ({folder_name}) created".encode(FORMAT))
+        else:
+            conn.send(f"Folder ({folder_name}) already exists.".encode(FORMAT))
+        
+        # Receive files
+
+        
+
+        # msg = conn.recv(SIZE).decode(FORMAT)
+        # print(msg)
 
 def main():
     print("[STARTING] Server is starting ...")
